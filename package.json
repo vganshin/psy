@@ -7,8 +7,5 @@
     "start": "babel main.js > script.js"
   },
   "author": "Vladislav Ganshin",
-  "license": "ISC",
-  "window": {
-  	"toolbar": false
-  }
+  "license": "ISC"
 }

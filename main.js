@@ -15,6 +15,86 @@ var settings = {
 
 // ==== Code ===
 
+var globalState = {
+  REGISTRATION: "REGISTRATION",
+  SHOW_RULES: "SHOW_RULES",
+  TEST: "TEST",
+  EXPERIMENT: "EXPERIMENT",
+  SETTINGS: "SETTINGS",
+  END: "END",
+
+  state: null,
+  setState: function (state) { this.state = state; resolveGlobalState(); },
+  resolve: function () {
+    switch (state.global) {
+      case globalState.REGISTRATION:
+        form.style.display = "block";
+
+        this.next = function () { this.setState(globalState.SHOW_RULES); };
+        break;
+      case globalState.SHOW_RULES:
+        // save user
+        form.style.display = "none";
+        rules.style.display = "block";
+
+        this.next = function () { this.setState(globalState.TEST); };
+        break;
+      case globalState.TEST:
+        rules.style.display = "none";
+        gameField.showMessage(settings.message[0]);
+        seriesState.start();
+
+        this.next = function () { this.setState(globalState.EXPERIMENT); };
+        break;
+      case globalState.EXPERIMENT:
+
+        break;
+      case globalState.SETTINGS:
+
+        break;
+      case globalState.END:
+
+        break;
+    }
+  },
+  next: function () {},
+}
+
+var experimentState = {
+  state: experimentState.PREPARE,
+  setState: function (state) { this.state = state; resolveExperimentState(); },
+  PREPARE: "PREPARE",
+  ALLOW_PRESS: "ALLOW_PRESS",
+  END_EXPERIMENT: "END_EXPERIMENT",
+  ERROR: "ERROR"
+}
+
+function resolveExperimentState () {
+
+}
+
+function nextExperimentState () {
+  switch (experimentState.global) {
+    case null:
+      globalState.setState(globalState.REGISTRATION);
+      break;
+    case globalState.REGISTRATION:
+      globalState.setState(globalState.SHOW_RULES);
+      break;
+    case globalState.SHOW_RULES:
+      globalState.setState(globalState.TEST);
+      break;
+    case globalState.TEST:
+      globalState.setState(globalState.EXPERIMENT);
+      break;
+    case globalState.EXPERIMENT:
+      globalState.setState(globalState.END);
+      break;
+    case globalState.END:
+      globalState.setState(globalState.REGISTRATION);
+      break;
+  }
+}
 
 var gameField = {
   dom: document.getElementById("circle"),
@@ -37,14 +117,10 @@ var gameField = {
 
 form.style.display = "block";
 submit.onclick = () => {
-  // save user
-  form.style.display = "none";
-  rules.style.display = "block";
+  nextGlobalState();
 }
 start_test.onclick = () => {
-  rules.style.display = "none";
-  gameField.showMessage(settings.message[0]);
-  seriesState.start();
+  nextGlobalState();
 }
 
 var stopWatch = {
@@ -86,8 +162,6 @@ timer.clear = () => clearTimeout(timer.current);
 var nrand = (a, b) => Math.round(a + Math.random() * (b - a));
 
 var results = [];
-
-var hello;
 
 addEventListener("keypress", e => {
   var result = stopWatch.stop();
@@ -157,4 +231,59 @@ function showExperiment(time) {
   }
   
   return timer(() => showAttention(), 1000);
+}
+
+globalState.setState(globalState.REGISTRATION);
+
+
+
+function resolveGlobalState () {
+  switch (state.global) {
+    case globalState.REGISTRATION:
+      form.style.display = "block";
+      break;
+    case globalState.SHOW_RULES:
+      // save user
+      form.style.display = "none";
+      rules.style.display = "block";
+      break;
+    case globalState.TEST:
+      rules.style.display = "none";
+      gameField.showMessage(settings.message[0]);
+      seriesState.start();
+
+      break;
+    case globalState.EXPERIMENT:
+
+      break;
+    case globalState.SETTINGS:
+
+      break;
+    case globalState.END:
+
+      break;
+  }
+}
+
+function nextGlobalState () {
+  switch (globalState.state) {
+    case null:
+      globalState.setState(globalState.REGISTRATION);
+      break;
+    case globalState.REGISTRATION:
+      globalState.setState(globalState.SHOW_RULES);
+      break;
+    case globalState.SHOW_RULES:
+      globalState.setState(globalState.TEST);
+      break;
+    case globalState.TEST:
+      globalState.setState(globalState.EXPERIMENT);
+      break;
+    case globalState.EXPERIMENT:
+      globalState.setState(globalState.END);
+      break;
+    case globalState.END:
+      globalState.setState(globalState.REGISTRATION);
+      break;
+  }
 }
