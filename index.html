@@ -1,0 +1,35 @@
+<meta charset="utf-8">
+<link rel="stylesheet" href="style.css"></link>
+<div class="fixed-overlay fixed-overlay__modal">
+  <div class="modal">
+    <div class="modal_container">
+      <div id="circle"></div>
+      <div id="on_start"><span>1</span>-я серия испытаний</div>
+      <div id="rules">
+        <h1>Описание</h1>
+        <br /> ...
+        <br />
+        <button id="start_test">Начать тест</button>
+      </div>
+      <form id="form">
+        <label for="name">ФИО:</label>
+        <input type="text" id="name" />
+        <br />
+        <label for="sport_type">Тип спорта:</label>
+        <select id="sport_type">
+          <option value='option-1'>Snowboard</option>
+          <option value='option-2'>Chu-pong</option>
+          <option value='other'>Другое</option>
+        </select>
+        <br />
+        <div style="display: none;">
+          <label for="other_sport_type">Какой:</label>
+          <input type="text" id="other_sport_type" />
+        </div>
+        <br />
+        <button type="button" id="submit">Продолжить</button>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="script.js"></script>

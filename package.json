@@ -1,0 +1,14 @@
+{
+  "name": "psy",
+  "version": "1.0.0",
+  "description": "Psy for Chu",
+  "main": "index.html",
+  "scripts": {
+    "start": "babel main.js > script.js"
+  },
+  "author": "Vladislav Ganshin",
+  "license": "ISC",
+  "window": {
+  	"toolbar": false
+  }
+}
