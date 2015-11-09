@@ -2,6 +2,15 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow: hidden;
+}
+
+body {
+  background-color: #f2f2f2;
+  color: #333333;
+}
+
 .fixed-overlay {
   position: fixed;
   overflow: auto;
@@ -47,6 +56,7 @@
   width: 200px;
   border-radius: 100px;
   display: none;
+  filter: blur(2px);
 }
 
 #on_start {
@@ -56,4 +66,12 @@
 
 #rules {
   display: none;
+}
+
+#consultant {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }

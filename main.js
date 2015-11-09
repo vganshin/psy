@@ -3,6 +3,12 @@ var form = document.getElementById("form");
 var rules = document.getElementById("rules");
 var start_test = document.getElementById("start_test");
 var submit = document.getElementById("submit");
+var consultant = document.getElementById("consultant");
+
+var user = {
+  results: [],
+  date: new Date(),
+};
 
 // == Functions ===
 
@@ -42,10 +48,29 @@ keypressListener.unset = () => removeEventListener("keypress", keypressListener.
 // === Settings ===
 
 var settings = {
-  numberOfExperiments: [1, 2, 2, 2], // [5, 15, 15, 15],
   waitBeforeRed: [1000, 3000],
-  attentionTime: [1000, 1000, 1500, 2000],
-  message: ["Тестовая серия", "Основная серия №1", "Основная серия №2", "Основная серия №3"],
+  series: [
+    {
+      number: 1,
+      attentionTime: 1000,
+      message: "Тестовая серия"
+    },
+    {
+      number: 2,
+      attentionTime: 1000,
+      message: "Основная серия №1"
+    },
+    {
+      number: 2,
+      attentionTime: 1500,
+      message: "Основная серия №2"
+    },
+    {
+      number: 2,
+      attentionTime: 2000,
+      message: "Основная серия №3"
+    },
+  ]
 };
 
 // ==== Code ===
@@ -54,33 +79,35 @@ var gameField = {
   dom: document.getElementById("circle"),
   showGreenCircle: function () {
     this.dom.style.display = "block";
-    this.dom.style.background = "green";
+    this.dom.style.background = "rgb(19, 199, 42)"; // "green";
     this.dom.textContent = "";
   },
   showRedCircle: function () {
     this.dom.style.display = "block";
-    this.dom.style.background = "red";
+    this.dom.style.background = "rgb(246, 46, 46)"; // "red";
     this.dom.textContent = "";
   },
   showMessage: function (message) {
     this.dom.style.display = "block";
-    this.dom.style.background = "white";
+    this.dom.style.background =  "#f2f2f2"; //"white";
     this.dom.textContent = message;
   }
 }
 
 form.style.display = "block";
 submit.onclick = () => {
+  // save user info
   form.style.display = "none";
   rules.style.display = "block";
 }
 start_test.onclick = () => {
   rules.style.display = "none";
+  user.toDelete = settings.series[0].number;
   prepareExperiment();
 }
 
 function prepareExperiment() {
-  gameField.showMessage(settings.message[0])
+  gameField.showMessage(settings.series[0].message)
   keypressListener((e) => {
     if (e.charCode === 32) {
       startExperiment();
@@ -94,19 +121,19 @@ function startExperiment() {
 }
 
 function endExperiment() {
-  settings.attentionTime.shift();
-  settings.numberOfExperiments.shift();
-  settings.message.shift();
+  settings.series.shift();
 
-  // save results
+  user.results.push(...results);
 
   results = [];
   timer(() => {
-    if (settings.message[0]) {
+    if (settings.series[0]) {
       prepareExperiment();
     } else {
       keypressListener.unset();
       gameField.showMessage("Game Over");
+      user.results = user.results.slice(user.toDelete);
+      console.log(user.results);
     }
   }, 1000)
   
@@ -118,9 +145,10 @@ function resolve_space(e) {
   var result = stopWatch.stop();
   timer.clear();
   if (e.charCode === 32 && pressPermission.isAllowedPress) {
+    pressPermission.diallowPress();
     gameField.showMessage(result);
     results.push(result);
-    if (results.length % settings.numberOfExperiments[0] === 0) {
+    if (results.length % settings.series[0].number === 0) {
       endExperiment();
     } else {
       timer(() => showExperiment(), 1000);
@@ -132,7 +160,7 @@ function resolve_space(e) {
 };
 
 function showExperiment() {
-  var attentionTime = settings.attentionTime[0]; // time
+  var attentionTime = settings.series[0].attentionTime; // time
   var waitBeforeRed = settings.waitBeforeRed;
   
   pressPermission.diallowPress();

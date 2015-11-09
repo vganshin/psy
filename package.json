@@ -9,8 +9,9 @@
   "author": "Vladislav Ganshin",
   "license": "ISC",
   "window": {
-    "toolbar": false,
+    "toolbar": true,
     "resizable": false,
-    "fullscreen": true
+    "fullscreen": false,
+    "kiosk": false
   }
 }
