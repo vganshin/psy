@@ -108,7 +108,9 @@ var consultant = {
 
 form.style.display = "flex";
 submit.onclick = () => {
-  // save user info
+  user.name = form.name.value;
+  user.sport_type = form.sport_type.value;
+
   form.style.display = "none";
   rules.style.display = "flex";
 }
@@ -146,9 +148,19 @@ function endExperiment() {
       keypressListener.unset();
       gameField.showMessage("Game Over");
       user.results = user.results.slice(user.toDelete);
-      console.log(user.results);
+      saveResults();
     }
   }, 1000)
+}
+
+function saveResults() {
+  window.user = user;
+  var results = user.results.map((result) => `${user.name},${user.sport_type},${result}`).join("\n");
+  var fs = require('fs');
+  if (!fs.existsSync("data")) {
+    fs.mkdirSync("data");
+  }
+  fs.writeFile(`data/${new Date()}`, results);
 }
 
 var results = [];
