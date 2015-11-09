@@ -147,6 +147,7 @@ function endExperiment() {
     } else {
       keypressListener.unset();
       gameField.showMessage("Game Over");
+      consultant.showMessage("");
       user.results = user.results.slice(user.toDelete);
       saveResults();
     }
@@ -160,7 +161,12 @@ function saveResults() {
   if (!fs.existsSync("data")) {
     fs.mkdirSync("data");
   }
-  fs.writeFile(`data/${new Date()}`, results);
+  try {
+    fs.writeFileSync(`data/${new Date()}`, results);
+    consultant.showMessage("Данные сохранены");
+  } catch(e) {
+    
+  }
 }
 
 var results = [];
