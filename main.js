@@ -3,11 +3,38 @@ var form = document.getElementById("form");
 var rules = document.getElementById("rules");
 var start_test = document.getElementById("start_test");
 var submit = document.getElementById("submit");
-var consultant = document.getElementById("consultant");
 
 var user = {
   results: [],
   date: new Date(),
+};
+
+// === Settings ===
+
+var settings = {
+  waitBeforeRed: [1000, 3000],
+  series: [
+    {
+      number: 1,
+      attentionTime: 1000,
+      message: "Тестовая серия"
+    },
+    {
+      number: 2,
+      attentionTime: 1000,
+      message: "Основная серия №1"
+    },
+    {
+      number: 2,
+      attentionTime: 1500,
+      message: "Основная серия №2"
+    },
+    {
+      number: 2,
+      attentionTime: 2000,
+      message: "Основная серия №3"
+    },
+  ]
 };
 
 // == Functions ===
@@ -45,60 +72,45 @@ function keypressListener(handler) {
 }
 keypressListener.unset = () => removeEventListener("keypress", keypressListener.handler);
 
-// === Settings ===
-
-var settings = {
-  waitBeforeRed: [1000, 3000],
-  series: [
-    {
-      number: 1,
-      attentionTime: 1000,
-      message: "Тестовая серия"
-    },
-    {
-      number: 2,
-      attentionTime: 1000,
-      message: "Основная серия №1"
-    },
-    {
-      number: 2,
-      attentionTime: 1500,
-      message: "Основная серия №2"
-    },
-    {
-      number: 2,
-      attentionTime: 2000,
-      message: "Основная серия №3"
-    },
-  ]
-};
-
 // ==== Code ===
 
 var gameField = {
   dom: document.getElementById("circle"),
+  message: document.getElementById("message"),
   showGreenCircle: function () {
     this.dom.style.display = "block";
-    this.dom.style.background = "rgb(19, 199, 42)"; // "green";
+    this.message.style.display = "none";
+    this.dom.style.background = "rgb(19, 199, 42)";
     this.dom.textContent = "";
   },
   showRedCircle: function () {
     this.dom.style.display = "block";
-    this.dom.style.background = "rgb(246, 46, 46)"; // "red";
+    this.dom.style.background = "rgb(246, 46, 46)";
     this.dom.textContent = "";
   },
   showMessage: function (message) {
-    this.dom.style.display = "block";
-    this.dom.style.background =  "#f2f2f2"; //"white";
-    this.dom.textContent = message;
+    this.dom.style.display = "none";
+    this.message.style.display = "flex";
+    this.message.textContent = message;
   }
 }
 
-form.style.display = "block";
+var consultant = {
+  dom: document.getElementById("consultant"),
+  showMessage: function (text) {
+    this.dom.style.display = "flex";
+    this.dom.textContent = text;
+  },
+  hide: function () {
+    this.dom.style.display = "none";
+  } 
+}
+
+form.style.display = "flex";
 submit.onclick = () => {
   // save user info
   form.style.display = "none";
-  rules.style.display = "block";
+  rules.style.display = "flex";
 }
 start_test.onclick = () => {
   rules.style.display = "none";
@@ -108,6 +120,7 @@ start_test.onclick = () => {
 
 function prepareExperiment() {
   gameField.showMessage(settings.series[0].message)
+  consultant.showMessage("Нажмите пробел");
   keypressListener((e) => {
     if (e.charCode === 32) {
       startExperiment();
@@ -136,7 +149,6 @@ function endExperiment() {
       console.log(user.results);
     }
   }, 1000)
-  
 }
 
 var results = [];
@@ -146,8 +158,9 @@ function resolve_space(e) {
   timer.clear();
   if (e.charCode === 32 && pressPermission.isAllowedPress) {
     pressPermission.diallowPress();
-    gameField.showMessage(result);
     results.push(result);
+    gameField.showMessage(result);
+    consultant.showMessage(`${results.length} из ${settings.series[0].number}`);
     if (results.length % settings.series[0].number === 0) {
       endExperiment();
     } else {
@@ -155,6 +168,7 @@ function resolve_space(e) {
     }
   } else {
     gameField.showMessage("Error");
+    consultant.showMessage(`${results.length} из ${settings.series[0].number}`);
     timer(() => showExperiment(), 1000);
   }
 };
@@ -182,6 +196,7 @@ function showExperiment() {
     gameField.showRedCircle();
   }
   
+  consultant.showMessage("");
   gameField.showMessage("");
   return timer(() => showAttention(), 1000);
 }
