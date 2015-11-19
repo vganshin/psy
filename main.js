@@ -11,30 +11,25 @@ var user = {
 
 // === Settings ===
 
-var settings = {
-  waitBeforeRed: [1000, 3000],
-  series: [
-    {
-      number: 1,
+function createSeries(number, times) {
+  var result = times.map((time, index) => ({
+    number: number,
+    attentionTime: time,
+    message: "Основная серия №" + index + 1
+  }));
+
+  result.unshift({
+      number: 5,
       attentionTime: 1000,
       message: "Тестовая серия"
-    },
-    {
-      number: 2,
-      attentionTime: 1000,
-      message: "Основная серия №1"
-    },
-    {
-      number: 2,
-      attentionTime: 1500,
-      message: "Основная серия №2"
-    },
-    {
-      number: 2,
-      attentionTime: 2000,
-      message: "Основная серия №3"
-    },
-  ]
+  })
+
+  return result;
+}
+
+var settings = {
+  waitBeforeRed: [1000, 3000],
+  series: createSeries(15, [1000, 1500, 2000, 2500, 3000, 3500, 4000])
 };
 
 // == Functions ===
